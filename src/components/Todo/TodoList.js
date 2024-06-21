@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { remove, complete } from '../redux/todoSlice';
+import { remove, complete } from '../../redux/todoSlice';
 
 export default function TodoList() {
   const todoList = useSelector((state) => state.todo);
