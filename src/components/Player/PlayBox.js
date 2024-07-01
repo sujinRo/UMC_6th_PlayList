@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { decrease, increase } from '../../redux/cartSlice';
 
 const Container = styled.div`
   width: 100%;
@@ -14,7 +16,7 @@ const Box = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 10px;
-  margin-right: 10px;
+  margin-right: 50px;
 `;
 
 const Img = styled.img`
@@ -38,7 +40,7 @@ const AmountBox = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1px;
+  gap: 0.8px;
 `;
 
 const Arrow = styled.div`
@@ -50,7 +52,10 @@ const Amount = styled.div`
   font-weight: 600;
 `;
 
-export default function PlayBox({ src, title, singer, price, amount }) {
+export default function PlayBox({ src, title, singer, price, id, idx }) {
+  const state = useSelector((state) => state.player);
+  const dispatch = useDispatch();
+
   return (
     <Container>
       <Box>
@@ -63,9 +68,9 @@ export default function PlayBox({ src, title, singer, price, amount }) {
         </TitleBox>
       </Box>
       <AmountBox>
-        <Arrow>△</Arrow>
-        <Amount>{amount}</Amount>
-        <Arrow>▽</Arrow>
+        <Arrow onClick={() => dispatch(increase(id))}>△</Arrow>
+        <Amount>{state[idx].amount}</Amount>
+        <Arrow onClick={() => dispatch(decrease(id))}>▽</Arrow>
       </AmountBox>
     </Container>
   );
