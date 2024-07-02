@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import PlayBox from '../components/Player/PlayBox';
 import { useDispatch, useSelector } from 'react-redux';
-import { remove } from '../redux/cartSlice';
+import { open } from '../redux/modalSlice';
 import { useEffect, useState } from 'react';
+import Modal from '../components/Player/Modal';
 
 const Container = styled.div`
-  width: 100%;
+  width: 100;
   margin-top: 120px;
   display: flex;
   flex-direction: column;
@@ -69,10 +70,6 @@ export default function MainPage() {
   const [isExist, setIsExist] = useState(true);
   let totalPrice = 0;
 
-  const onRemove = () => {
-    state.map((item) => dispatch(remove(item.id)));
-  };
-
   useEffect(() => {
     if (totalPrice === 0) {
       setIsExist(false);
@@ -83,6 +80,7 @@ export default function MainPage() {
 
   return (
     <Container>
+      <Modal />
       <Title>당신이 선택한 음반</Title>
       {isExist ? (
         <>
@@ -109,7 +107,7 @@ export default function MainPage() {
             <Text>총 가격</Text>
             <Text>₩ {totalPrice}</Text>
           </TotalPrice>
-          <Button onClick={onRemove}>장바구니 초기화</Button>
+          <Button onClick={() => dispatch(open())}>장바구니 초기화</Button>
         </>
       ) : (
         <Msg>고객님이 좋아하는 음반을 담아보세요~!</Msg>
