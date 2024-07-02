@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import cartItems from '../assets/cartItem';
 import PlayBox from '../components/Player/PlayBox';
+import { useDispatch, useSelector } from 'react-redux';
+import { remove } from '../redux/cartSlice';
 
 const Container = styled.div`
   width: 100%;
@@ -55,28 +56,41 @@ const Button = styled.button`
 `;
 
 export default function MainPage() {
+  const state = useSelector((state) => state.player);
+  const dispatch = useDispatch();
+  let totalPrice = 0;
+
+  const onRemove = () => {
+    state.map((item) => dispatch(remove(item.id)));
+  };
+
   return (
     <Container>
       <Title>당신이 선택한 음반</Title>
       <List>
-        {cartItems.map((item, idx) => (
-          <PlayBox
-            key={item.id}
-            src={item.img}
-            title={item.title}
-            singer={item.singer}
-            price={item.price}
-            id={item.id}
-            idx={idx}
-          />
-        ))}
+        {state.map((item, idx) => {
+          const amount = item.amount;
+          totalPrice += amount * item.price;
+          return (
+            <PlayBox
+              key={idx}
+              src={item.img}
+              title={item.title}
+              singer={item.singer}
+              d
+              price={item.price}
+              id={item.id}
+              amount={item.amount}
+            />
+          );
+        })}
       </List>
       <Hr />
       <TotalPrice>
         <Text>총 가격</Text>
-        <Text>₩ </Text>
+        <Text>₩ {totalPrice}</Text>
       </TotalPrice>
-      <Button>장바구니 초기화</Button>
+      <Button onClick={onRemove}>장바구니 초기화</Button>
     </Container>
   );
 }

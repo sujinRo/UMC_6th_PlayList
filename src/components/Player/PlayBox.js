@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import { decrease, increase } from '../../redux/cartSlice';
+import { useDispatch } from 'react-redux';
+import { decrease, increase, remove } from '../../redux/cartSlice';
 
 const Container = styled.div`
   width: 100%;
@@ -52,9 +52,16 @@ const Amount = styled.div`
   font-weight: 600;
 `;
 
-export default function PlayBox({ src, title, singer, price, id, idx }) {
-  const state = useSelector((state) => state.player);
+export default function PlayBox({ src, title, singer, price, id, amount }) {
   const dispatch = useDispatch();
+
+  const onDecrease = (amount, id) => {
+    if (amount === 1) {
+      dispatch(remove(id));
+    } else {
+      dispatch(decrease(id));
+    }
+  };
 
   return (
     <Container>
@@ -69,8 +76,8 @@ export default function PlayBox({ src, title, singer, price, id, idx }) {
       </Box>
       <AmountBox>
         <Arrow onClick={() => dispatch(increase(id))}>△</Arrow>
-        <Amount>{state[idx].amount}</Amount>
-        <Arrow onClick={() => dispatch(decrease(id))}>▽</Arrow>
+        <Amount>{amount}</Amount>
+        <Arrow onClick={() => onDecrease(amount, id)}>▽</Arrow>
       </AmountBox>
     </Container>
   );
