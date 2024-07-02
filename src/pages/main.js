@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import PlayBox from '../components/Player/PlayBox';
 import { useDispatch, useSelector } from 'react-redux';
 import { remove } from '../redux/cartSlice';
+import { useEffect, useState } from 'react';
 
 const Container = styled.div`
   width: 100%;
@@ -55,42 +56,64 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+const Msg = styled.div`
+  font-size: 11px;
+  font-weight: 600;
+  color: gray;
+  margin-top: 30px;
+`;
+
 export default function MainPage() {
   const state = useSelector((state) => state.player);
   const dispatch = useDispatch();
+  const [isExist, setIsExist] = useState(true);
   let totalPrice = 0;
 
   const onRemove = () => {
     state.map((item) => dispatch(remove(item.id)));
   };
 
+  useEffect(() => {
+    if (totalPrice === 0) {
+      setIsExist(false);
+    } else {
+      setIsExist(true);
+    }
+  });
+
   return (
     <Container>
       <Title>당신이 선택한 음반</Title>
-      <List>
-        {state.map((item, idx) => {
-          const amount = item.amount;
-          totalPrice += amount * item.price;
-          return (
-            <PlayBox
-              key={idx}
-              src={item.img}
-              title={item.title}
-              singer={item.singer}
-              d
-              price={item.price}
-              id={item.id}
-              amount={item.amount}
-            />
-          );
-        })}
-      </List>
-      <Hr />
-      <TotalPrice>
-        <Text>총 가격</Text>
-        <Text>₩ {totalPrice}</Text>
-      </TotalPrice>
-      <Button onClick={onRemove}>장바구니 초기화</Button>
+      {isExist ? (
+        <>
+          <List>
+            {state.map((item, idx) => {
+              const amount = item.amount;
+              totalPrice += amount * item.price;
+              return (
+                <PlayBox
+                  key={idx}
+                  src={item.img}
+                  title={item.title}
+                  singer={item.singer}
+                  d
+                  price={item.price}
+                  id={item.id}
+                  amount={item.amount}
+                />
+              );
+            })}
+          </List>
+          <Hr />
+          <TotalPrice>
+            <Text>총 가격</Text>
+            <Text>₩ {totalPrice}</Text>
+          </TotalPrice>
+          <Button onClick={onRemove}>장바구니 초기화</Button>
+        </>
+      ) : (
+        <Msg>고객님이 좋아하는 음반을 담아보세요~!</Msg>
+      )}
     </Container>
   );
 }
