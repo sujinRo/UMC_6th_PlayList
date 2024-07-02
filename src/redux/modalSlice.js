@@ -7,9 +7,11 @@ export const modalSlice = createSlice({
   initialState,
   reducers: {
     open: (state) => {
+      document.body.style.overflow = 'hidden';
       state.isOpen = true;
     },
     close: (state) => {
+      document.body.style.overflow = 'unset';
       state.isOpen = false;
     },
   },
