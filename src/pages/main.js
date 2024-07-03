@@ -5,6 +5,7 @@ import { open } from '../redux/modalSlice';
 import { useEffect, useState } from 'react';
 import Modal from '../components/Player/Modal';
 import { getMusicList } from '../redux/cartSlice';
+import { BeatLoader } from 'react-spinners';
 
 const Container = styled.div`
   width: 100;
@@ -65,6 +66,17 @@ const Msg = styled.div`
   margin-top: 30px;
 `;
 
+const Loading = styled.div`
+  font-size: 20px;
+  font-weight: 600;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+`;
+
 export default function MainPage() {
   const { items, status, error } = useSelector((state) => state.player);
   const dispatch = useDispatch();
@@ -85,44 +97,50 @@ export default function MainPage() {
     }
   });
 
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
   if (status === 'failed') {
-    return <div>Error: {error}</div>;
+    alert(error);
   }
   return (
     <Container>
       <Modal />
-      <Title>당신이 선택한 음반</Title>
-      {isExist ? (
-        <>
-          <List>
-            {items.map((item, idx) => {
-              const amount = item.amount;
-              totalPrice += amount * item.price;
-              return (
-                <PlayBox
-                  key={idx}
-                  src={item.img}
-                  title={item.title}
-                  singer={item.singer}
-                  price={item.price}
-                  id={item.id}
-                  amount={item.amount}
-                />
-              );
-            })}
-          </List>
-          <Hr />
-          <TotalPrice>
-            <Text>총 가격</Text>
-            <Text>₩ {totalPrice}</Text>
-          </TotalPrice>
-          <Button onClick={() => dispatch(open())}>장바구니 초기화</Button>
-        </>
+      {status === 'loading' ? (
+        <Loading>
+          <BeatLoader color="#4b44cf" size={15} />
+          Loading...
+        </Loading>
       ) : (
-        <Msg>고객님이 좋아하는 음반을 담아보세요~!</Msg>
+        <>
+          {isExist ? (
+            <>
+              <Title>당신이 선택한 음반</Title>
+              <List>
+                {items.map((item, idx) => {
+                  const amount = item.amount;
+                  totalPrice += amount * item.price;
+                  return (
+                    <PlayBox
+                      key={idx}
+                      src={item.img}
+                      title={item.title}
+                      singer={item.singer}
+                      price={item.price}
+                      id={item.id}
+                      amount={item.amount}
+                    />
+                  );
+                })}
+              </List>
+              <Hr />
+              <TotalPrice>
+                <Text>총 가격</Text>
+                <Text>₩ {totalPrice}</Text>
+              </TotalPrice>
+              <Button onClick={() => dispatch(open())}>장바구니 초기화</Button>
+            </>
+          ) : (
+            <Msg>고객님이 좋아하는 음반을 담아보세요~!</Msg>
+          )}{' '}
+        </>
       )}
     </Container>
   );
