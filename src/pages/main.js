@@ -78,7 +78,7 @@ const Loading = styled.div`
 `;
 
 export default function MainPage() {
-  const { items, status, error } = useSelector((state) => state.player);
+  const { items, status } = useSelector((state) => state.player);
   const dispatch = useDispatch();
   const [isExist, setIsExist] = useState(true);
   let totalPrice = 0;
@@ -97,9 +97,6 @@ export default function MainPage() {
     }
   });
 
-  if (status === 'failed') {
-    alert(error);
-  }
   return (
     <Container>
       <Modal />

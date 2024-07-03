@@ -13,7 +13,7 @@ export const getMusicList = createAsyncThunk(
 );
 
 //const initialState = cartItems;
-const initialState = { items: [], status: 'idle', error: null };
+const initialState = { items: [], status: 'idle' };
 
 export const cartSlice = createSlice({
   name: 'playerFunction',
@@ -44,8 +44,7 @@ export const cartSlice = createSlice({
         state.items = action.payload;
       })
       .addCase(getMusicList.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message;
+        alert('Error');
       });
   },
 });

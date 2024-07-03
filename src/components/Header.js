@@ -45,7 +45,7 @@ const Circle = styled.div`
 `;
 
 export default function Header() {
-  const { items, status, error } = useSelector((state) => state.player);
+  const { items, status } = useSelector((state) => state.player);
   let total = 0;
 
   items.map((item) => (total += item.amount));
