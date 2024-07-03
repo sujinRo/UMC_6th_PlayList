@@ -54,11 +54,11 @@ const Button = styled.button`
 
 export default function Modal() {
   const boolean = useSelector((state) => state.modal);
-  const state = useSelector((state) => state.player);
+  const { items, status, error } = useSelector((state) => state.player);
   const dispatch = useDispatch();
 
   const onRemove = () => {
-    state.map((item) => dispatch(remove(item.id)));
+    items.map((item) => dispatch(remove(item.id)));
     dispatch(close());
   };
 

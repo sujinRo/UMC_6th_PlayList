@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { open } from '../redux/modalSlice';
 import { useEffect, useState } from 'react';
 import Modal from '../components/Player/Modal';
+import { getMusicList } from '../redux/cartSlice';
 
 const Container = styled.div`
   width: 100;
@@ -65,19 +66,31 @@ const Msg = styled.div`
 `;
 
 export default function MainPage() {
-  const state = useSelector((state) => state.player);
+  const { items, status, error } = useSelector((state) => state.player);
   const dispatch = useDispatch();
   const [isExist, setIsExist] = useState(true);
   let totalPrice = 0;
 
   useEffect(() => {
-    if (totalPrice === 0) {
+    if (status === 'idle') {
+      dispatch(getMusicList());
+    }
+  }, [status, dispatch]);
+
+  useEffect(() => {
+    if (items.length === 0) {
       setIsExist(false);
     } else {
       setIsExist(true);
     }
   });
 
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+  if (status === 'failed') {
+    return <div>Error: {error}</div>;
+  }
   return (
     <Container>
       <Modal />
@@ -85,7 +98,7 @@ export default function MainPage() {
       {isExist ? (
         <>
           <List>
-            {state.map((item, idx) => {
+            {items.map((item, idx) => {
               const amount = item.amount;
               totalPrice += amount * item.price;
               return (
@@ -94,7 +107,6 @@ export default function MainPage() {
                   src={item.img}
                   title={item.title}
                   singer={item.singer}
-                  d
                   price={item.price}
                   id={item.id}
                   amount={item.amount}

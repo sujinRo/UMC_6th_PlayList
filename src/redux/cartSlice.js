@@ -1,27 +1,52 @@
 //slice 만들기 _ slice는 reducer와 action 생성함수 등의 기능 제공하는 객체
 //name: reducer 이름, initialState: 데이터 초기값 object 형식으로 key/value 형식으로!, reducers: action 형식 지정
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import cartItems from '../assets/cartItem';
+import { getMusic } from '../apis/PlayList';
 
-const initialState = cartItems;
+export const getMusicList = createAsyncThunk(
+  'playerFunction/getMusicList',
+  async () => {
+    const data = await getMusic();
+    return data;
+  },
+);
+
+//const initialState = cartItems;
+const initialState = { items: [], status: 'idle', error: null };
 
 export const cartSlice = createSlice({
   name: 'playerFunction',
   initialState,
   reducers: {
     increase: (state, action) => {
-      return state.map((e) =>
+      state.items = state.items.map((e) =>
         e.id === action.payload ? { ...e, amount: e.amount + 1 } : e,
       );
     },
     decrease: (state, action) => {
-      return state.map((e) =>
+      state.items = state.items.map((e) =>
         e.id === action.payload ? { ...e, amount: e.amount - 1 } : e,
       );
     },
     remove: (state, action) => {
-      return state.filter((e) => e.id !== action.payload);
+      state.items = state.items.filter((e) => e.id !== action.payload);
     },
+  },
+
+  extraReducers: (builder) => {
+    builder
+      .addCase(getMusicList.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getMusicList.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.items = action.payload;
+      })
+      .addCase(getMusicList.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      });
   },
 });
 
